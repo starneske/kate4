@@ -1,21 +1,21 @@
 import time
 
-from qube.src.commons.error import ErrorCodes, HelloServiceError
+from qube.src.commons.error import ErrorCodes, kate4ServiceError
 from qube.src.commons.utils import clean_nonserializable_attributes
-from qube.src.models.hello import Hello
+from qube.src.models.kate4 import kate4
 
 
-class HelloService:
+class kate4Service:
     def __init__(self, context):
         self.auth_context = context
 
     def find_by_id(self, entity_id):
         # filter with id not working,
         # unable to proceed with tenant filter
-        data = Hello.query.get(entity_id)
+        data = kate4.query.get(entity_id)
         if data is None:
-            raise HelloServiceError(
-                'hello {} not found'.format(entity_id),
+            raise kate4ServiceError(
+                'kate4 {} not found'.format(entity_id),
                 ErrorCodes.NOT_FOUND)
 
         data = data.wrap()
@@ -24,8 +24,8 @@ class HelloService:
 
     def get_all(self):
         list = []
-        data = Hello.query.filter(
-            Hello.tenantId == self.auth_context.tenant_id)
+        data = kate4.query.filter(
+            kate4.tenantId == self.auth_context.tenant_id)
         for data_item in data:
             data = data_item.wrap()
             clean_nonserializable_attributes(data)
@@ -33,7 +33,7 @@ class HelloService:
         return list
 
     def save(self, model):
-        new_data = Hello()
+        new_data = kate4()
         for key in model:
             new_data.__setattr__(key, model[key])
         data = new_data
@@ -51,10 +51,10 @@ class HelloService:
 
     def update(self, model, entity_id):
 
-        record = Hello.query.get(entity_id)  # Hello is a mongo class
+        record = kate4.query.get(entity_id)  # kate4 is a mongo class
         if record is None:
-            raise HelloServiceError(
-                'hello {} not found'.format(entity_id),
+            raise kate4ServiceError(
+                'kate4 {} not found'.format(entity_id),
                 ErrorCodes.NOT_FOUND)
 
         for key in model:
@@ -68,12 +68,12 @@ class HelloService:
 
     def delete(self, entity_id):
         if not self.auth_context.is_system_user:
-            raise HelloServiceError(
+            raise kate4ServiceError(
                 'Delete operation is forbidden',
                 ErrorCodes.NOT_ALLOWED)
-        data = Hello.query.get(entity_id)
+        data = kate4.query.get(entity_id)
         if data is None:
-            raise HelloServiceError(
-                'hello {} not found'.format(entity_id),
+            raise kate4ServiceError(
+                'kate4 {} not found'.format(entity_id),
                 ErrorCodes.NOT_FOUND)
         data.remove()
